@@ -1,5 +1,5 @@
-# main.py
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import docker
 import tempfile
@@ -7,6 +7,16 @@ import os
 import time
 
 app = FastAPI()
+
+# Enable CORS
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # In production, restrict this to your frontend's origin
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 client = docker.from_env()
 
 class CodePayload(BaseModel):
@@ -19,7 +29,6 @@ def execute_code(payload: CodePayload):
     if language not in ["python", "js"]:
         raise HTTPException(status_code=400, detail="Unsupported language. Only 'python' and 'js' are supported.")
 
-    # Select filename and executor image based on the language
     if language == "python":
         filename = "code.py"
         image = "python_executor"
@@ -27,27 +36,25 @@ def execute_code(payload: CodePayload):
         filename = "code.js"
         image = "node_executor"
 
-    # Write the submitted code to a temporary file
     with tempfile.TemporaryDirectory() as tmpdir:
         file_path = os.path.join(tmpdir, filename)
         with open(file_path, "w") as code_file:
             code_file.write(payload.code)
 
-        # Run the executor container with the temporary directory mounted as read-only at /app
         start_time = time.time()
         try:
             container = client.containers.run(
                 image=image,
                 volumes={tmpdir: {'bind': '/app', 'mode': 'ro'}},
                 detach=True,
-                network_disabled=True,  # disable networking inside executor container
-                mem_limit="100m",       # memory limit
+                network_disabled=True,
+                mem_limit="100m",
                 cpu_period=100000,
-                cpu_quota=50000         # limit CPU usage (50% of one CPU)
+                cpu_quota=50000
             )
             container.wait(timeout=10)
             logs = container.logs().decode("utf-8")
-            container.remove()  # cleanup
+            container.remove()
         except docker.errors.ContainerError as e:
             logs = str(e)
         except docker.errors.APIError as e:
