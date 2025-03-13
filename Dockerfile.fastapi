@@ -1,0 +1,23 @@
+# Dockerfile.fastapi
+FROM docker:20.10-dind
+
+# Install Python 3 and pip (using Alpine package manager)
+RUN apk add --no-cache python3 py3-pip
+
+WORKDIR /app
+
+# Copy requirements and install Python dependencies
+COPY requirements.txt .
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Copy FastAPI app and entrypoint script
+COPY main.py .
+COPY entrypoint.sh .
+RUN chmod +x entrypoint.sh
+
+# Copy the executor directories
+COPY executors/ ./executors/
+
+EXPOSE 8000
+
+ENTRYPOINT ["./entrypoint.sh"]

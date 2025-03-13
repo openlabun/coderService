@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Code Compiler Service</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    #output { margin-top: 20px; background: #f0f0f0; padding: 10px; white-space: pre-wrap; }
+    label { display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Code Compiler Service</h1>
+  <div>
+    <label for="language">Select Language:</label>
+    <select id="language">
+      <option value="python">Python</option>
+      <option value="js">JavaScript</option>
+    </select>
+  </div>
+  <div>
+    <label for="code">Code:</label>
+    <textarea id="code" rows="10" cols="80">print("Hello World")</textarea>
+  </div>
+  <div>
+    <button id="runBtn">Run Code</button>
+  </div>
+  <div id="output"></div>
+
+  <script>
+    document.getElementById("runBtn").addEventListener("click", function() {
+      const language = document.getElementById("language").value;
+      const code = document.getElementById("code").value;
+      const outputDiv = document.getElementById("output");
+
+      outputDiv.innerText = "Running code...";
+
+      fetch("http://localhost:8000/execute", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ language: language, code: code })
+      })
+      .then(response => response.json())
+      .then(data => {
+        outputDiv.innerText = "Output:\n" + data.output +
+                              "\nExecution Time: " + data.execution_time.toFixed(3) + " sec";
+      })
+      .catch(error => {
+        outputDiv.innerText = "Error: " + error;
+      });
+    });
+  </script>
+</body>
+</html>
