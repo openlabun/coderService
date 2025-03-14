@@ -25,5 +25,5 @@ jobs:
             git pull origin main
             docker stop coderService
             docker rm coderService
-            docker build -f Dockerfile.fastapi -t coderService-image . || { echo "Docker build failed"; exit 1; }
-            docker run -d -it -p 5029:8000  -v dind-data:/var/lib/docker --restart unless-stopped --name coderService coderService-image  || { echo "Docker run failed"; exit 1; }
+            docker build -f Dockerfile.fastapi -t coderservice-image . || { echo "Docker build failed"; exit 1; }
+            docker run --privileged -d -it -p 5029:8000  -v dind-data:/var/lib/docker --restart unless-stopped --name coderService coderservice-image  || { echo "Docker run failed"; exit 1; }

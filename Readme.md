@@ -7,9 +7,9 @@ The editor is ace-builds (https://github.com/ajaxorg/ace-builds)
 
 ## Installation
 ```
-docker build -f Dockerfile.fastapi -t fastapi_dind_executor .
+docker build -f Dockerfile.fastapi -t coderservice-image .
 
-docker run --privileged -p 5029:8000 -v dind-data:/var/lib/docker fastapi_dind_executor
+docker run --privileged -d -p 5029:8000 -v dind-data:/var/lib/docker coderservice-image
 
 ```
 
