@@ -1,5 +1,9 @@
-# Conmpiler API
+# Compiler API
 This is a simple API that can compile and run code in multiple languages. It uses FastAPI as the backend and Docker in Docker to run the code in a container. The frontend is a simple Vue.js app that sends the code to the backend and displays the output.
+
+In the current version, the API supports Python, Node.
+
+The editor is ace-builds (https://github.com/ajaxorg/ace-builds)
 
 ## Installation
 ```

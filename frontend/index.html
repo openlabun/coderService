@@ -2,36 +2,84 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Code Compiler Service</title>
+  <title>Advanced Code Editor</title>
   <style>
-    body { font-family: Arial, sans-serif; padding: 20px; }
-    #output { margin-top: 20px; background: #f0f0f0; padding: 10px; white-space: pre-wrap; }
-    label { display: block; margin-top: 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .toolbar {
+      padding: 10px;
+      background: #ddd;
+      display: flex;
+      align-items: center;
+    }
+    .toolbar select, .toolbar button {
+      margin-right: 10px;
+      padding: 5px 10px;
+    }
+    #editor {
+      flex: 1;
+      width: 100%;
+    }
+    #output {
+      height: 150px;
+      width: 100%;
+      overflow-y: auto;
+      background: #f0f0f0;
+      padding: 10px;
+      white-space: pre-wrap;
+      border-top: 1px solid #ccc;
+    }
   </style>
 </head>
 <body>
-  <h1>Code Compiler Service</h1>
-  <div>
-    <label for="language">Select Language:</label>
+  <div class="toolbar">
     <select id="language">
       <option value="python">Python</option>
       <option value="js">JavaScript</option>
     </select>
-  </div>
-  <div>
-    <label for="code">Code:</label>
-    <textarea id="code" rows="10" cols="80">print("Hello World")</textarea>
-  </div>
-  <div>
     <button id="runBtn">Run Code</button>
   </div>
-  <div id="output"></div>
+  <div id="editor">print("Hello World")</div>
+  <div id="output">Output will appear here...</div>
 
+  <!-- Load Ace Editor from local package -->
+  <script src="./ace/ace.js"></script>
+  <script src="./ace/ext-language_tools.js"></script>
   <script>
+    // Initialize Ace Editor
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/monokai");
+    editor.setOptions({
+      enableBasicAutocompletion: true,
+      enableSnippets: true,
+      enableLiveAutocompletion: true,
+      showLineNumbers: true,
+      tabSize: 4
+    });
+
+    // Update editor mode based on language selection
+    var languageSelect = document.getElementById("language");
+    function updateEditorMode() {
+      var lang = languageSelect.value;
+      if (lang === "python") {
+        editor.session.setMode("ace/mode/python");
+      } else if (lang === "js") {
+        editor.session.setMode("ace/mode/javascript");
+      }
+    }
+    languageSelect.addEventListener("change", updateEditorMode);
+    updateEditorMode();
+
+    // Send code to FastAPI when "Run Code" button is clicked
     document.getElementById("runBtn").addEventListener("click", function() {
-      const language = document.getElementById("language").value;
-      const code = document.getElementById("code").value;
-      const outputDiv = document.getElementById("output");
+      var language = languageSelect.value;
+      var code = editor.getValue();
+      var outputDiv = document.getElementById("output");
 
       outputDiv.innerText = "Running code...";
 
