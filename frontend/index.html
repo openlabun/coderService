@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>Advanced Code Editor</title>
+  <title>Multi-Language Code Editor</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -17,7 +17,8 @@
       display: flex;
       align-items: center;
     }
-    .toolbar select, .toolbar button {
+    .toolbar select,
+    .toolbar button {
       margin-right: 10px;
       padding: 5px 10px;
     }
@@ -40,11 +41,19 @@
   <div class="toolbar">
     <select id="language">
       <option value="python">Python</option>
-      <option value="js">JavaScript</option>
+      <option value="javascript">JavaScript</option>
+      <option value="java">Java</option>
+      <option value="c">C</option>
+      <option value="cpp">C++</option>
+      <option value="ruby">Ruby</option>
+      <option value="php">PHP</option>
+      <option value="csharp">C#</option>
+      <option value="go">Go</option>
+      <option value="r">R</option>
     </select>
     <button id="runBtn">Run Code</button>
   </div>
-  <div id="editor">print("Hello World")</div>
+  <div id="editor">// Write your code here</div>
   <div id="output">Output will appear here...</div>
 
   <!-- Load Ace Editor from local package -->
@@ -62,20 +71,32 @@
       tabSize: 4
     });
 
-    // Update editor mode based on language selection
+    // Mapping language identifiers to Ace Editor modes
+    var modeMapping = {
+      python: "ace/mode/python",
+      javascript: "ace/mode/javascript",
+      java: "ace/mode/java",
+      c: "ace/mode/c_cpp",
+      cpp: "ace/mode/c_cpp",
+      ruby: "ace/mode/ruby",
+      php: "ace/mode/php",
+      csharp: "ace/mode/csharp",
+      go: "ace/mode/golang",
+      r: "ace/mode/r"
+    };
+
     var languageSelect = document.getElementById("language");
+
     function updateEditorMode() {
       var lang = languageSelect.value;
-      if (lang === "python") {
-        editor.session.setMode("ace/mode/python");
-      } else if (lang === "js") {
-        editor.session.setMode("ace/mode/javascript");
-      }
+      var mode = modeMapping[lang] || "ace/mode/text";
+      editor.session.setMode(mode);
     }
+
     languageSelect.addEventListener("change", updateEditorMode);
     updateEditorMode();
 
-    // Send code to FastAPI when "Run Code" button is clicked
+    // Send code to FastAPI when "Run Code" is clicked
     document.getElementById("runBtn").addEventListener("click", function() {
       var language = languageSelect.value;
       var code = editor.getValue();
