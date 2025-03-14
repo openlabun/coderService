@@ -9,13 +9,8 @@ The editor is ace-builds (https://github.com/ajaxorg/ace-builds)
 ```
 docker build -f Dockerfile.fastapi -t fastapi_dind_executor .
 
-docker run  --privileged -p 8000:8000 fastapi_dind_executor
+docker run --privileged -p 5029:8000 -v dind-data:/var/lib/docker fastapi_dind_executor
 
-cd frontend
-
-docker build -t code_editor_frontend .
-
-docker run -d -p 8080:80 code_editor_frontend
 ```
 
 ## Usage

@@ -1,6 +1,9 @@
 # Dockerfile.fastapi
 FROM docker:20.10-dind
 
+# Persist Docker's storage directory (where images and containers are stored)
+VOLUME /var/lib/docker
+
 # Install Python 3 and pip (using Alpine package manager)
 RUN apk add --no-cache python3 py3-pip
 
@@ -15,7 +18,7 @@ COPY main.py .
 COPY entrypoint.sh .
 RUN chmod +x entrypoint.sh
 
-# Copy the executor directories
+# Copy all executor directories (assumes each executor is in its own subfolder)
 COPY executors/ ./executors/
 
 EXPOSE 8000
