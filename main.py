@@ -6,7 +6,12 @@ import tempfile
 import os
 import time
 
-app = FastAPI()
+app = FastAPI(
+    title="Coder service API",
+    description="An API to compile and execute code in Python, JavaScript, Java, C, CPP, Ruby, PHP, C#, Go and R.",
+    version="1.0.0"
+)
+
 
 # Enable CORS (adjust allowed origins as needed)
 app.add_middleware(
