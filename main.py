@@ -82,4 +82,8 @@ def execute_code(payload: CodePayload):
         
         execution_time = time.time() - start_time
 
-    return {"output": logs, "execution_time": execution_time}
+    return {
+    "output": logs if logs else "No output",
+    "execution_time": round(execution_time, 3) if execution_time else 0.0
+    }
+

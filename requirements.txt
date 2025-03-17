@@ -2,3 +2,5 @@ fastapi
 uvicorn
 docker
 pydantic
+pytest
+requests

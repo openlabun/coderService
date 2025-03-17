@@ -1,4 +1,5 @@
-# Dockerfile for c_executor
 FROM gcc:latest
 WORKDIR /app
-CMD gcc main.c -o main && ./main
+COPY run_c.sh /app/run_c.sh
+RUN chmod +x /app/run_c.sh
+CMD ["/app/run_c.sh"]

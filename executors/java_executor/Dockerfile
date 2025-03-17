@@ -1,5 +1,7 @@
-# Dockerfile for java_executor
 FROM openjdk:11-jdk-slim
+
 WORKDIR /app
-# Compile and then run the Java code (assumes a single file Main.java)
-CMD javac Main.java && java Main
+COPY run_java.sh /app/run_java.sh
+RUN chmod +x /app/run_java.sh
+
+CMD ["/app/run_java.sh"]

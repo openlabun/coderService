@@ -1,4 +1,5 @@
-# Dockerfile for cpp_executor
 FROM gcc:latest
 WORKDIR /app
-CMD g++ main.cpp -o main && ./main
+COPY run_cpp.sh /app/run_cpp.sh
+RUN chmod +x /app/run_cpp.sh
+CMD ["/app/run_cpp.sh"]
